@@ -1,4 +1,4 @@
-# makefile uteset server
+# makefile uteset client
 
 CXX = g++
 CC = $(CXX)
@@ -10,19 +10,19 @@ CFLAGS = -g3
 
 # c++ language
 CXXFLAGS = -std=c++14
-CXXFLAGS+= -Wall -pedantic
-CXXFLAGS+= #-Werror
+CXXFLAGS+= -Wall -pedantic 
+CXXFLAGS+= -Werror
 CXXFLAGS+= -g3
 
 LDFLAGS =
-LDLIBS = 
+LDLIBS = -lpthread
 
-SRC_DIR= ../src/
-INC_DIR= ../inc/
-INL_DIR= ../inc/inl/
+SRC_DIR= ../../src/
+INC_DIR= ../../inc/
+INL_DIR= ../../inc/inl/
 
-TARGET = utestServer
-OBJS = utestServer.o  $(SRC_DIR)file_actions.o $(SRC_DIR)server.o 
+TARGET = utestClient
+OBJS = utestClient.o $(SRC_DIR)client.o 
 		
 
 all: $(TARGET)
