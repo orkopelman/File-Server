@@ -10,19 +10,19 @@ CFLAGS = -g3
 
 # c++ language
 CXXFLAGS = -std=c++14
-CXXFLAGS+= -Wall -pedantic
-CXXFLAGS+= #-Werror
+CXXFLAGS+= -Wall -pedantic 
+CXXFLAGS+= -Werror
 CXXFLAGS+= -g3
 
 LDFLAGS =
-LDLIBS = 
+LDLIBS = -lpthread
 
 SRC_DIR= ../../src/
 INC_DIR= ../../inc/
 INL_DIR= ../../inc/inl/
 
 TARGET = utestServer
-OBJS = utestServer.o  $(SRC_DIR)file_actions.o $(SRC_DIR)server.o 
+OBJS = utestServer.o $(SRC_DIR)server.o $(SRC_DIR)file_actions.o
 		
 
 all: $(TARGET)
@@ -38,7 +38,7 @@ vala: all
 DEPENDS= $(OBJS:%.o=%.d)
 
 clean:
-	@$(RM) $(TARGET) $(OBJS) $(DEPENDS)
+	@$(RM) $(TARGET) $(OBJS) $(DEPENDS) *.txt
 
 .PHONY: all check clean DEPENDS
 
