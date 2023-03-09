@@ -37,12 +37,6 @@ private:
     void Listen();
 
 private:
-    int open(const char *name, const int flags=0);
-    int close();
-    int read(char * buf, int size);
-    int write(const char * buf, int size);
-
-private:
     Socket m_socket;
 };
 
