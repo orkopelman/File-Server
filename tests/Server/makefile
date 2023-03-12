@@ -9,7 +9,7 @@ CPPFLAGS += -MMD -MP
 CFLAGS = -g3
 
 # c++ language
-CXXFLAGS = -std=c++14
+CXXFLAGS = -std=c++17
 CXXFLAGS+= -Wall -pedantic 
 CXXFLAGS+= -Werror
 CXXFLAGS+= -g3

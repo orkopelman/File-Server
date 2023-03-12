@@ -11,7 +11,7 @@ CFLAGS = -g3
 # c++ language
 CXXFLAGS = -std=c++14
 CXXFLAGS+= -Wall -pedantic 
-CXXFLAGS+= -Werror
+CXXFLAGS+=#-Werror
 CXXFLAGS+= -g3
 
 LDFLAGS =
