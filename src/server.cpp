@@ -17,6 +17,7 @@ void IntermediateServer::Run()
                 while (true) {
                     std::cout << " new client \n";
                     m_selector.Track(addNewClient());
+                    m_numOfClients++;
                 }
             }
             catch (net::Continued&) {
