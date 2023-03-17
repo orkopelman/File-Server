@@ -31,13 +31,14 @@ class nfs //abstracet client interface
 public:
     virtual ~nfs() = default;
     
-    virtual int write(const char *a_name, const char* a_buf, int a_size) = 0;
-    virtual int read(const char *a_name, char * a_buf, int a_size)= 0;
-
     virtual int open(const char *a_name, const int a_flags=0) = 0;
     virtual int close() = 0;
     virtual int read(char * a_buf, int a_size) = 0;
     virtual int write(const char * buf, int a_size) = 0;
+
+    // write/read with file name include open + read/write + close
+    virtual int write(const char *a_name, const char* a_buf, int a_size) = 0;
+    virtual int read(const char *a_name, char * a_buf, int a_size)= 0;
 };
 
 
@@ -46,14 +47,14 @@ class mynfs : public nfs
 public:
     mynfs();
 
-    int write(const char *a_name, const char* a_buf, int a_size) override;
-    int read(const char *a_name, char * a_buf, int a_size) override;
-
-   
     int open(const char *a_name, const int a_flags=0) override;
     int close() override;
     int read(char * a_buf, int a_size) override ;
-    int write(const char * a_buf, int a_size) override ;
+    int write(const char * a_buf, int a_size) override;
+
+    // write/read with file name include open + read/write + close
+    int write(const char *a_name, const char* a_buf, int a_size) override;
+    int read(const char *a_name, char * a_buf, int a_size) override;
 
 private:
     net::ClientSocket m_clientSocket;
