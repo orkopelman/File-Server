@@ -12,7 +12,7 @@ class AbstractAct {
 public:
     virtual ~AbstractAct() = default;
 
-    virtual char* Act(std::fstream& a_file) = 0;
+    virtual char* Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes) = 0;
 
 protected:
     AbstractAct() = default;
@@ -23,44 +23,22 @@ protected:
 
 class OpenAct : public AbstractAct {
 public:
-    OpenAct(char *a_buffer, int* a_sentBytes);
-
-    char* Act(std::fstream& a_file) override;
-
-private:
-    char m_buffer[protocol::bufSize];
+    char* Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes) override;
 };
 
 class CloseAct : public AbstractAct {
 public:
-    CloseAct(char *a_buffer, int* a_sentBytes);
-
-    char* Act(std::fstream& a_file) override;
-
-private:
-    char m_buffer[protocol::bufSize];
+    char* Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes) override;
 };
 
 class ReadAct : public AbstractAct {
 public:
-    ReadAct(char * a_buffer, int* a_sentBytes);
-
-    char* Act(std::fstream& a_file) override;
-
-private:
-    char m_buffer[protocol::bufSize];
-    int* m_sentBytes;
+    char* Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes) override;
 };
 
 class WriteAct : public AbstractAct {
 public:
-    WriteAct(char * a_buffer, int a_recvBytes, int* a_sentBytes);
-
-    char* Act(std::fstream& a_file) override;
-  
-private:
-    char m_buffer[protocol::bufSize];
-    int m_recBytes;
+    char* Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes) override;
 };
 
 }

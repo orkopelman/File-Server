@@ -3,6 +3,7 @@
 
 #include "threads_pool_act.hpp"
 #include "thread_pool_actions.hpp"
+#include "server.hpp"
 
 namespace threads {
 
@@ -13,6 +14,14 @@ void IsPrimeActFunc(unsigned int a_num);
 void IsSumOfDigits0ActFunc(unsigned int a_num);
 void IsPolyndrumActFunc(unsigned int a_num);
 
+// struct AddNewClientAct : public threads::AbstractAct {
+// 	AddNewClientAct(std::unique_ptr<IntermediateServer> a_server) 
+// 	: m_server(std::move(a_server)) {}
+
+// 	virtual void Act() override {addNewClient2(std::move(m_server));}
+
+// 	std::unique_ptr<IntermediateServer> m_server;
+// };
 
 struct IsPrimeAct : public threads::AbstractAct {
 	IsPrimeAct(unsigned int a_num) : m_num(a_num) {}

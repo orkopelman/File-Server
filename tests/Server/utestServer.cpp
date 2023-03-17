@@ -4,12 +4,17 @@
 
 #include "memory"
 
-
-
 BEGIN_TEST(RunServer)
     std::unique_ptr<InterfaceServer> myServer = std::make_unique<Server>("127.0.0.1");
+    
+    
+    myServer->Kill();
+    std::thread t1([&myServer]() {
+        sleep(5000);
+    });
     myServer->Run();
-    //myServer->Kill();
+    
+    t1.join();
     ASSERT_PASS();
 END_TEST
 

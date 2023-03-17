@@ -22,17 +22,22 @@ Assumption and directions
 #include "tcp_client_socket.hpp"
 #include <fstream>
 #include <iostream>
+#include <memory>
+
 
 
 class nfs //abstracet client interface
 {
 public:
     virtual ~nfs() = default;
+    
+    virtual int write(const char *a_name, const char* a_buf, int a_size) = 0;
+    virtual int read(const char *a_name, char * a_buf, int a_size)= 0;
 
-    virtual int open(const char *name, const int flags=0) = 0;
+    virtual int open(const char *a_name, const int a_flags=0) = 0;
     virtual int close() = 0;
-    virtual int read(char * buf, int size) = 0;
-    virtual int write(const char * buf, int size) = 0;
+    virtual int read(char * a_buf, int a_size) = 0;
+    virtual int write(const char * buf, int a_size) = 0;
 };
 
 
@@ -40,31 +45,20 @@ class mynfs : public nfs
 {
 public:
     mynfs();
+
+    int write(const char *a_name, const char* a_buf, int a_size) override;
+    int read(const char *a_name, char * a_buf, int a_size) override;
+
    
-    int open(const char *name, const int flags=0) override;
+    int open(const char *a_name, const int a_flags=0) override;
     int close() override;
-    int read(char * buf, int size) override ;
-    int write(const char * buf, int size) override ;
+    int read(char * a_buf, int a_size) override ;
+    int write(const char * a_buf, int a_size) override ;
 
 private:
     net::ClientSocket m_clientSocket;
 };
 
 
-
-// int main() {
-
-//     char buffer[100];
-
-//     nfs *f1 = new mynfs;
-//     nfs *f2 = new mynfs;
-
-//     f1->open("test1.txt");
-//     f2->open("test2.txt");
-
-//     auto bytes = f1->read(buffer,20);
-//     std::cout << buffer << " " << bytes << std::endl;
-//     return 0;
-// }
 
 

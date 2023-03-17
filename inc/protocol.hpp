@@ -9,6 +9,8 @@ enum FILE_OPEN_FLAGS {
     READ,
     WRITE,
     APPEND,
+    READ_WRITE,
+    READ_WRITE_APPEND,
     BINARY
 };
 } // flags

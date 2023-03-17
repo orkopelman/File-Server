@@ -7,19 +7,35 @@ mynfs::mynfs()
 : m_clientSocket("127.0.0.1")
 {}
 
-int mynfs::open(const char *name, const int flags) 
+int mynfs::write(const char *a_name, const char* a_buf, int a_size) 
+{
+    open(a_name, protocol::flags::WRITE);
+    int ans = write(a_buf,strlen(a_buf));
+    close();
+    return ans;
+}
+
+int mynfs::read(const char *a_name, char * a_buf, int a_size) 
+{
+    open(a_name, protocol::flags::READ);
+    int ans = read(a_buf, a_size);
+    close();
+    return ans;
+}
+
+int mynfs::open(const char *a_name, const int a_flags) 
 {
     
-    size_t size = strlen(name) + 3;
+    size_t size = strlen(a_name) + 3;
     char* buffer = new char[size];          //unique_ptr
 
     //std::unique_ptr<char> buffer = std::make_unique<char>();
     int i=0;
 
     buffer[i++] = protocol::OPEN;
-    buffer[i++] = flags;
+    buffer[i++] = a_flags;
 
-    memcpy(buffer+i,name,size-2);
+    memcpy(buffer+i,a_name,size-2);
 
     m_clientSocket.Send(buffer, size); 
 
@@ -44,28 +60,28 @@ int mynfs::close()
     return response;
 }
 
-int mynfs::read(char * buf, int size)
+int mynfs::read(char * a_buf, int a_size)
 {
     size_t sizeBuf = 2;
     char* buffer = new char[sizeBuf]; 
 
     buffer[0] = protocol::READ;
-    buffer[1] = static_cast<uint8_t>(size);
+    buffer[1] = static_cast<uint8_t>(a_size);
 
     m_clientSocket.Send(buffer, sizeBuf); 
 
-    size_t read_bytes = m_clientSocket.Recv(buf,size);
+    size_t read_bytes = m_clientSocket.Recv(a_buf,a_size);
     delete[] buffer; 
     return read_bytes;
 }
 
-int mynfs::write(const char * buf, int size)
+int mynfs::write(const char * a_buf, int a_size)
 {
-    size_t sizeBuf = strlen(buf) + 1;
+    size_t sizeBuf = strlen(a_buf) + 1;
     char* buffer = new char[sizeBuf]; 
 
     buffer[0] = protocol::WRITE;
-    memcpy(buffer+1,buf,sizeBuf-1);
+    memcpy(buffer+1,a_buf,sizeBuf-1);
 
     m_clientSocket.Send(buffer, sizeBuf); 
 

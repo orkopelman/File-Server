@@ -4,6 +4,7 @@
 #include "protocol.hpp"
 #include <string.h> //strlen()
 #include <thread>
+#include <memory>
 
 
 
@@ -44,23 +45,18 @@ BEGIN_TEST(AppendToFile)
 END_TEST
 
 
-BEGIN_TEST(ReadFromFile)
+BEGIN_TEST(WriteReadFromFile)
     const char* buf = "this is the text to write into the file";
     char bufToRead[4];
-    
     std::unique_ptr<nfs> client = std::make_unique<mynfs>();
-    client->open("filename.txt", protocol::flags::WRITE);
-    client->write(buf,strlen(buf));
-    client->close();
 
-    client->open("filename.txt", protocol::flags::READ);
-    int resp = client->read(bufToRead, 4);
-    client->close();
+    client->write("filename.txt",buf, strlen(buf));
+    
+    int resp = client->read("filename.txt",bufToRead,4);
 
-    const char* compare = "this";
-
+  
     ASSERT_EQUAL(resp,4);
-    ASSERT_EQUAL(strcmp(bufToRead,compare), 0);
+    ASSERT_EQUAL(strcmp(bufToRead,"this"), 0);
 END_TEST
 
 
@@ -127,7 +123,7 @@ BEGIN_SUITE(Its what you learn after you know it all that counts)
     //TEST(OpenCloseFile) 
     //TEST(WriteToEmptyFile) 
     //TEST(AppendToFile) 
-    TEST(ReadFromFile)
+    TEST(WriteReadFromFile)
     //TEST(TwoClientsWriteToSameFile)
     //TEST(SeveralClients)
 

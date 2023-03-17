@@ -3,27 +3,33 @@
 
 namespace actions {
 
-int open(std::fstream& a_file,const char *name, const int flags=0) 
+int open(std::fstream& a_file,const char *a_name, const int a_flags=0) 
 {
+    auto var = std::ios::in;
     
-    switch (flags)
+    switch (a_flags)
     {
-        case (protocol::flags::READ):
-            a_file.open(name,std::ios::in);
+        case (protocol::flags::READ_WRITE_APPEND):
+            var = std::ios::in | std::ios::out | std::ios::app;
+            break;
+        case (protocol::flags::READ_WRITE):
+            var = std::ios::in | std::ios::out;
             break;
         case (protocol::flags::WRITE):
-            a_file.open(name,std::ios::out);
+            var = std::ios::out;
             break;
         case (protocol::flags::APPEND):
-            a_file.open(name,std::ios::app);
+            var = std::ios::app;
             break;
         case (protocol::flags::BINARY):
-            a_file.open(name,std::ios::binary);
+             var = std::ios::binary;
             break;
 
         default:
             break;
     }
+
+    a_file.open(a_name, var);
 
     if (a_file.good() || a_file.eof()) {
         return protocol::SUCCESS;
@@ -40,7 +46,7 @@ int close(std::fstream& a_file)
     return protocol::FAILED;
 }
 
-int read(std::fstream& a_file,char * buf, int size)  {
+int read(std::fstream& a_file,char * a_buf, int a_size)  {
 
     if (!a_file.is_open()) {
         throw std::runtime_error("file is closed");
@@ -53,10 +59,10 @@ int read(std::fstream& a_file,char * buf, int size)  {
         throw std::runtime_error("file is corrupted");
     }
     
-    a_file.read(buf,size);
+    a_file.read(a_buf,a_size);
 
     if (a_file.good()) {
-        return size;
+        return a_size;
     }
 
     if (!a_file.eof()) {
@@ -65,7 +71,7 @@ int read(std::fstream& a_file,char * buf, int size)  {
     return a_file.gcount();
 }
 
-int write(std::fstream& a_file,const char * buf, int size)  {
+int write(std::fstream& a_file,const char * a_buf, int a_size)  {
 
     if (!a_file.is_open()) {
         return protocol::FAILED;
@@ -75,7 +81,7 @@ int write(std::fstream& a_file,const char * buf, int size)  {
         return protocol::FAILED;
     }
 
-    a_file.write(buf + 1, size);
+    a_file.write(a_buf + 1, a_size);
 
     if (a_file.bad() || a_file.fail()) {
         return protocol::FAILED;
@@ -85,53 +91,30 @@ int write(std::fstream& a_file,const char * buf, int size)  {
 }
 
 
-OpenAct::OpenAct(char *a_buffer, int* a_sentBytes)
+char* OpenAct::Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes)
 {
-    memcpy(m_buffer, a_buffer, protocol::bufSize);
-    *a_sentBytes = 1;
+    a_buffer[0] = open(a_file ,a_buffer + 2, a_buffer[1]); 
+    return a_buffer; 
 }
 
-CloseAct::CloseAct(char *a_buffer, int* a_sentBytes)
+char* CloseAct::Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes)
 {
-    memcpy(m_buffer, a_buffer, protocol::bufSize);
-    *a_sentBytes = 1;
+    a_buffer[0] = close(a_file);
+    return a_buffer; 
 }
 
-ReadAct::ReadAct(char * a_buffer, int* a_sentBytes)
-: m_sentBytes(a_sentBytes)
-{{memcpy(m_buffer, a_buffer, protocol::bufSize);}}
-
-WriteAct::WriteAct(char * a_buffer, int a_recvBytes, int* a_sentBytes)
-: m_recBytes(a_recvBytes)
+char* ReadAct::Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes) 
 {
-    memcpy(m_buffer, a_buffer, protocol::bufSize);
-    *a_sentBytes = 1;
+    a_buffer[0] = protocol::DATA;
+    *a_sentBytes = read(a_file, a_buffer, static_cast<uint8_t>(a_buffer[1])) + 1; 
+    return a_buffer; 
 }
 
-
-char* OpenAct::Act(std::fstream& a_file)  
+char* WriteAct::Act(std::fstream& a_file,char *a_buffer,  int a_recvBytes, int* a_sentBytes)
 {
-    m_buffer[0] = open(a_file ,m_buffer + 2, m_buffer[1]); 
-    return m_buffer; 
+    a_buffer[0] = write(a_file, a_buffer, a_recvBytes-1); 
+    return a_buffer;
 }
 
-char* CloseAct::Act(std::fstream& a_file)  
-{
-    m_buffer[0] = close(a_file);
-    return m_buffer; 
-}
-
-char* ReadAct::Act(std::fstream& a_file)  
-{
-    m_buffer[0] = protocol::DATA;
-    *m_sentBytes = read(a_file, m_buffer, static_cast<uint8_t>(m_buffer[1])) + 1; 
-    return m_buffer; 
-}
-
-char* WriteAct::Act(std::fstream& a_file)  
-{
-    m_buffer[0] = write(a_file, m_buffer, m_recBytes-1); 
-    return m_buffer;
-}
 
 } //actionss
