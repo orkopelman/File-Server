@@ -12,9 +12,4 @@ Steps and requirements:
 4. Several files can be open at the same time
 5. Several clients can use server at the same time
 
-Assumption and directions
-1. working code is not expected, pseudo-code in C++ syntax
-2. TCP implmentation may be schematic, can skip details (flags, includes, and other stuff are not required)
-3. Describe messages in both directions
-4. Pay attention to interfaces (class methods)
 
